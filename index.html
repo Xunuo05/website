@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            .layer {position:absolute;
+            background-color:orange;
+            border-radius:5px;
+            }
+            .wrap {position: relative;
+            width: 1200px;
+            height: 500px;
+            margin: 100px auto;
+            border-bottom: 10px solid black;
+            }
+            .col-1,
+            .col-2,
+            .col-3 {position: absolute;
+            height: 100%;
+            width: 20px;
+            border-top-left-radius: 9px;
+            border-top-right-radius: 9px;
+            background-color: #855E42;
+            }
+	    .col-1 {left: 16.5%;
+      	    transform: translateX(-50%);
+            }
+	    .col-2 {left: 50%;
+            transform: translateX(-50%);
+            }
+	    .col-3 {
+      	    left: 82.5%;
+      	    transform: translateX(-50%);
+    	    }
+            .wrap .item {position: absolute;
+            left: 16.5%;
+            top: 0px;
+            transform: translateX(-50%);
+            text-align: center;
+            color: #fff;
+            }
+            .numdisks {position: absolute;
+            height: 50px;
+            width: 100%;
+            bottom: -60px;
+            }
+            .numdisks .start .Pause .Resume,
+            .numdisks input {
+            height: 70%;
+            }
+        </style>
+    </head>
+    <body>
+        <script src ="js/Drag.js"></script>
+        <script src ="js/hanoi.js"></script>
+        <div>
+            <div class="wrap">
+                <div class = "col-1"></div>
+                <div class = "col-2"></div>
+                <div class = "col-3"></div>
+                <div class = "numdisks">
+                    <button class = "start">Start</button>
+                    <button class = "Pause">Pause</button>
+                    <button class = "Resume">Resume</button>
+            </div>
+            <div>
+                <label for="diskNumber">Number of Disks：</label>
+                <select id="diskNumber">
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                </select>
+           </div>
+           <div>
+                <label for="moveSpeed">Time Period：</label>
+                <select id="moveSpeed">
+                <option value="1000">1000</option>
+                <option value="750">750</option>
+                <option value="500">500</option>
+                <option value="250">250</option>
+                <option value="100">100</option>
+                </select>
+           </div>
+        </div>
+    </body>
+</html>
