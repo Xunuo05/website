@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .wrap {
+      position: relative;
+      width: 1000px;
+      height: 500px;
+      margin: 100px auto;
+      border-bottom: 5px solid black;
+    }
+
+    .col-1,
+    .col-2,
+    .col-3 {
+      position: absolute;
+      height: 100%;
+      width: 18px;
+      border-top-left-radius: 9px;
+      border-top-right-radius: 9px;
+      background-color: #855E42;
+    }
+
+    .col-1 {
+      left: 16.5%;
+      transform: translateX(-50%);
+      /*  一定要有这个 */
+    }
+
+    .col-2 {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .col-3 {
+      left: 82.5%;
+      transform: translateX(-50%);
+    }
+
+    .wrap .item {
+      position: absolute;
+      left: 16.5%;
+      top: 0px;
+      transform: translateX(-50%);
+      /* 这里预先设定 */
+      text-align: center;
+      color: #fff;
+    }
+
+    .menu {
+      top: 600px;
+      position: absolute;
+      height: 50px;
+      width: 100%;
+      bottom: -60px;
+    }
+
+    .menu .start .stop .reStart,
+    .menu input {
+      height: 70%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="col-1"></div>
+    <div class="col-2"></div>
+    <div class="col-3"></div>
+    <div class="menu">
+      <button class="start">开始</button>
+      <button class="stop">暂停</button>
+      <button class="reStart">恢复</button>
+      <div>
+        <label for="diskNumber">选择圆盘数：</label>
+        <select id="diskNumber">
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+        </select>
+      </div>
+      <div>
+        <label for="moveSpeed">移动速度(ms)：</label>
+        <select id="moveSpeed">
+          <option value="1000">1000</option>
+          <option value="750">750</option>
+          <option value="500">500</option>
+          <option value="250">250</option>
+          <option value="100">100</option>
+        </select>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let btn = document.querySelector('.start');
+    let btn_stop = document.querySelector('.stop');
+    let btn_reStart = document.querySelector('.reStart');
+    let wrap = document.querySelector('.wrap');
+    let col = document.querySelector('.col-1');
+    let wrapHeight = wrap.clientHeight;
+    let wrapWidth = wrap.clientWidth;
+    let colWidth = col.clientWidth;
+    let maxH = 300; // 以确保圆盘堆叠到这个最大高度
+    let H = 25; // 每个圆盘的高度，暂时固定
+    let minW = colWidth + 10; // 圆盘的最小宽度
+    let W = wrapWidth * 0.33 - 30 * 2; // 每个圆盘的宽度，减去两侧的边距
+
+    let colPos = [ wrapWidth * 0.165, wrapWidth * 0.5, wrapWidth * 0.825 ];
+
+    let num = 3;
+    let runTime = 300;
+    let items = 0;
+    let nums = [];
+    let tiems = 0; // 修正后的变量名
+    let RATIO = 0.3 //倾斜角度
+    // 初始化汉诺塔游戏
+    function Init() {
+      // 移除所有圆盘
+      let existingItems = document.querySelectorAll('.item');
+      existingItems.forEach(item => item.remove());
+      num = parseInt(document.getElementById('diskNumber').value); // 圆盘的数量
+      runTime = parseInt(document.getElementById('moveSpeed').value); // 移动速度
+      nums = [ num, 0, 0 ]; // 每根柱子上的圆盘数量
+      let dtW = (W - minW) / num; // 圆盘之间的宽度差异
+      let nowCount = num - 1; // 当前圆盘下面的圆盘数量
+      let rbg = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f' ]; // 用于生成随机颜色的数组
+      // 创建圆盘并将它们放置在第一根柱子上
+      for (let i = 1; i <= num; i++) {
+        let div = document.createElement('div');
+
+        let color = '#';
+        for (let j = 0; j < 6; j++) {
+          color += rbg[ Math.floor(Math.random() * 16) ]; // 生成随机颜色
+        }
+        let w1 = W - nowCount * dtW
+        let h1 = w1 * RATIO
+        let div1 = document.createElement('div')
+        div1.innerHTML = '<div style="width:' + w1 + 'px; height:' + H + 'px; background-color:' + color + '"></div>'
+          + '<div style="margin: -' + h1 / 2 + 'px 0px -' + (h1 + H) + 'px 0px; width:' + w1 + 'px; height:' + h1 + 'px; background-color:' + color + '; border-radius:' + (w1 / 2) + 'px/' + h1 / 2 + 'px"></div>'
+          + '<div style="width:' + (w1 - 2) + 'px; height:' + h1 + 'px; background-image: radial-gradient(#101010, #305020, 15%, yellow, ' + color + '); border-radius: ' + (w1 / 2 - 1) + 'px/' + h1 / 2 + 'px; border: 1px red solid;"></div>';
+        div1.style.zIndex = 10000 + i
+        div.classList.add('item');
+        div.style.height = H + 'px';
+        div.style.width = W - nowCount * dtW + 'px';
+        div.style.top = wrapHeight - (nowCount + 1) * H + 'px';
+        div.style.zIndex = 100000 - i
+        div.style.transition = 'all ' + runTime + 'ms';
+        div.append(div1)
+        wrap.appendChild(div);
+        nowCount--;
+      }
+      items = document.querySelectorAll('.item');
+      tiems = 0; // 重置时间计数器
+    }
+    let timeouts = []; // 存储超时的数组
+
+    // 将一个圆盘从一个柱子移动到另一个柱子的函数
+    function move(n, a, b, c) {
+      let topTarget = parseInt(items[ n ].style.top);
+      let numOfCol = nums[ c ];
+      let timeout1 = setTimeout(function () { // 超时1
+        items[ n ].style.top = '0px';
+      }, tiems * runTime);
+      timeouts.push(timeout1); // 将超时 ID 存入数组
+      tiems++;
+
+      let timeout2 = setTimeout(function () { // 超时2
+        items[ n ].style.left = colPos[ c ] + 'px';
+      }, tiems * runTime);
+      timeouts.push(timeout2); // 将超时 ID 存入数组
+      tiems++;
+
+      let timeout3 = setTimeout(function () { // 超时3
+        items[ n ].style.top = wrapHeight - (numOfCol + 1) * H + 'px';
+      }, tiems * runTime);
+      timeouts.push(timeout3); // 将超时 ID 存入数组
+      tiems++;
+
+      nums[ a ]--;
+      nums[ c ]++;
+    }
+
+    // 递归解决汉诺塔问题的函数
+    function hanoi(n, a, b, c) {
+      if (n === 0) {
+        move(n, a, b, c);
+      } else {
+        hanoi(n - 1, a, c, b);
+        move(n, a, b, c);
+        hanoi(n - 1, b, a, c);
+      }
+    }
+
+    // 监听“开始”按钮的点击事件
+    btn.addEventListener('click', function (e) {
+      Init();
+      hanoi(num - 1, 0, 1, 2);
+    });
+
+    // 监听“暂停”按钮的点击事件
+    btn_stop.addEventListener('click', function (e) {
+      timeouts.forEach(timeout => clearTimeout(timeout));
+    });
+
+    // 监听“恢复”按钮的点击事件，以继续动画
+    btn_reStart.addEventListener('click', function (e) {
+      timeouts.forEach(timeout => clearTimeout(timeout));
+      timeouts = []; // 清空超时数组
+      tiems = 0; // 重置计时器
+      hanoi(num - 1, 0, 1, 2);
+    });
+  </script>
+</body>
+
+</html>
